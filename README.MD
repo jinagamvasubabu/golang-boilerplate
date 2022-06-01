@@ -1,4 +1,4 @@
-#list of things
+# list of things
 * REST APIs - Done
 * DB access - Postgres - Done
 * Dockerize - docker compose, docker file - In Progress
