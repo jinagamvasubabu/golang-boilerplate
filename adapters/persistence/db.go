@@ -3,9 +3,9 @@ package adapters
 import (
 	"fmt"
 
-	Logger "github.com/jinagamvasubabu/JITScheduler/adapters/logger"
-	"github.com/jinagamvasubabu/JITScheduler/config"
-	"github.com/jinagamvasubabu/JITScheduler/model"
+	Logger "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
+	"github.com/jinagamvasubabu/golang-boilerplate/config"
+	"github.com/jinagamvasubabu/golang-boilerplate/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

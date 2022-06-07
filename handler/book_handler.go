@@ -10,8 +10,8 @@ import (
 	"fmt"
 
 	"github.com/gorilla/mux"
-	"github.com/jinagamvasubabu/JITScheduler/model"
-	"github.com/jinagamvasubabu/JITScheduler/service"
+	"github.com/jinagamvasubabu/golang-boilerplate/model"
+	"github.com/jinagamvasubabu/golang-boilerplate/service"
 )
 
 type handler struct {

@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jinagamvasubabu/JITScheduler/config"
+	"github.com/jinagamvasubabu/golang-boilerplate/config"
 	"github.com/sirupsen/logrus"
 )
 

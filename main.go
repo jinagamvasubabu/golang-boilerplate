@@ -9,12 +9,12 @@ import (
 	"syscall"
 	"time"
 
-	log "github.com/jinagamvasubabu/JITScheduler/adapters/logger"
-	db "github.com/jinagamvasubabu/JITScheduler/adapters/persistence"
-	"github.com/jinagamvasubabu/JITScheduler/config"
-	handler "github.com/jinagamvasubabu/JITScheduler/handler"
-	"github.com/jinagamvasubabu/JITScheduler/repository"
-	"github.com/jinagamvasubabu/JITScheduler/service"
+	log "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
+	db "github.com/jinagamvasubabu/golang-boilerplate/adapters/persistence"
+	"github.com/jinagamvasubabu/golang-boilerplate/config"
+	handler "github.com/jinagamvasubabu/golang-boilerplate/handler"
+	"github.com/jinagamvasubabu/golang-boilerplate/repository"
+	"github.com/jinagamvasubabu/golang-boilerplate/service"
 )
 
 func main() {

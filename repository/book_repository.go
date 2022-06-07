@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	Logger "github.com/jinagamvasubabu/JITScheduler/adapters/logger"
-	"github.com/jinagamvasubabu/JITScheduler/model"
+	Logger "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
+	"github.com/jinagamvasubabu/golang-boilerplate/model"
 	"gorm.io/gorm"
 )
 

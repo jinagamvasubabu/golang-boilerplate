@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
-	Logger "github.com/jinagamvasubabu/JITScheduler/adapters/logger"
-	"github.com/jinagamvasubabu/JITScheduler/model"
-	"github.com/jinagamvasubabu/JITScheduler/repository"
+	Logger "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
+	"github.com/jinagamvasubabu/golang-boilerplate/model"
+	"github.com/jinagamvasubabu/golang-boilerplate/repository"
 )
 
 type bookService struct {
