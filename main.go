@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -7,76 +6,57 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	log "github.com/jinagamvasubabu/JITScheduler/adapters/logger"
 	db "github.com/jinagamvasubabu/JITScheduler/adapters/persistence"
 	"github.com/jinagamvasubabu/JITScheduler/config"
-	"github.com/jinagamvasubabu/JITScheduler/handlers"
+	handler "github.com/jinagamvasubabu/JITScheduler/handler"
+	"github.com/jinagamvasubabu/JITScheduler/repository"
+	"github.com/jinagamvasubabu/JITScheduler/service"
 )
 
 func main() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	go func() {
-		oscall := <-c
-		log.Info("oscall", fmt.Sprintf("%s:%+v", "oscall", oscall.String()))
-		cancel()
-	}()
-
-	if err := run(ctx); err != nil {
-		log.Error("failed to serve:")
-	}
-}
-
-func run(ctx context.Context) (err error) {
+	ctx := context.Background()
+	// Handle sigterm and await termChan signal
+	termChan := make(chan os.Signal)
+	signal.Notify(termChan, syscall.SIGTERM, syscall.SIGINT)
 	//Initialize the config
 	if err := config.InitConfig(); err != nil {
 		log.Error("error while loading the config", fmt.Sprintf("%s:%s", err, err.Error()))
-		panic(err)
 	}
 	//Logger
 	log.InitLogger()
-
 	//Initialize the Database
-	DB := db.InitDatabase()
+	DB, err := db.InitDatabase()
+	if err != nil {
+		log.Errorf("Error:%s", err.Error())
+	}
+	//Initiliaze the repository
+	bookRepository := repository.NewBookRepository(ctx, DB)
+	//Initiliaze the service
+	bookService := service.NewBookService(ctx, bookRepository)
+	//Initiliaze the handler
+	bookHandler := handler.NewBookHandler(bookService)
 
-	//Initiliaze the handlers
-	h := handlers.New(DB)
-	router := handlers.InitRouter(h)
-
+	router := handler.InitRouter(bookHandler)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", config.GetConfig().HOST, config.GetConfig().PORT),
 		Handler: router,
 	}
-
+	//Graceful shutdown on OS signals (CTRL+C, etc)
+	go func() {
+		<-termChan // Blocks here until interrupted
+		log.Info("SIGTERM received. Shutdown process initiated\n")
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		srv.Shutdown(ctx)
+	}()
 	log.Info("Server started")
 	//Start the server
 	if err := srv.ListenAndServe(); err != nil {
-		log.Error("error while starting the server", fmt.Sprintf("%s:%s", err, err.Error()))
-		panic(err)
+		log.Infof("HTTP server interupted, Error - %s:%s", err, err.Error())
 	}
-	<-ctx.Done()
-
-	log.Info("server stopped")
-
-	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer func() {
-		cancel()
-	}()
-
-	if err = srv.Shutdown(ctxShutDown); err != nil {
-		log.Error("server Shutdown Failed")
-	}
-
-	log.Info("server exited properly")
-
-	if err == http.ErrServerClosed {
-		err = nil
-	}
-
-	return
+	log.Info("Server Stopped")
 }

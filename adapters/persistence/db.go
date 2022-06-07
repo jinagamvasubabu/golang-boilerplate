@@ -3,27 +3,43 @@ package adapters
 import (
 	"fmt"
 
+	Logger "github.com/jinagamvasubabu/JITScheduler/adapters/logger"
 	"github.com/jinagamvasubabu/JITScheduler/config"
-	"github.com/jinagamvasubabu/JITScheduler/models"
-	log "github.com/sirupsen/logrus"
+	"github.com/jinagamvasubabu/JITScheduler/model"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func InitDatabase() *gorm.DB {
+var db *gorm.DB
+
+func InitDatabase() (*gorm.DB, error) {
 	cfg := config.GetConfig()
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", cfg.PgUser, cfg.PgPassword, cfg.PgHost, cfg.PgPort, cfg.DB)
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
 	if err != nil {
-		log.Fatalln(err)
+		Logger.Errorf("err:=%s", err.Error())
+		return nil, err
 	}
 
 	//Auto Migration
 	if cfg.Migrate {
-		db.AutoMigrate(&models.Book{})
+		db.AutoMigrate(&model.Book{})
 	}
+	// Get generic database object sql.DB to use its functions
+	sqlDB, _ := db.DB()
+	sqlDB.SetMaxIdleConns(cfg.MaxOpenConnections - 1)
+	sqlDB.SetMaxOpenConns(cfg.MaxOpenConnections)
+	Logger.Info("Successfully created db connection")
+	return db, nil
+}
 
+func GetDBConn() *gorm.DB {
 	return db
+}
+
+func SetDBConn(conn *gorm.DB) {
+	db = conn
 }

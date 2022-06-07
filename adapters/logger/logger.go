@@ -35,6 +35,13 @@ func Debug(msg string, tags ...string) {
 	Logger.WithFields(parseFields(tags...)).Debug(msg)
 }
 
+func Debugf(format string, args ...interface{}) {
+	if Logger.Level < logrus.DebugLevel {
+		return
+	}
+	Logger.Debugf(format, args...)
+}
+
 func Info(msg string, tags ...string) {
 	if Logger.Level < logrus.InfoLevel {
 		return
@@ -42,11 +49,25 @@ func Info(msg string, tags ...string) {
 	Logger.WithFields(parseFields(tags...)).Info(msg)
 }
 
+func Infof(format string, args ...interface{}) {
+	if Logger.Level < logrus.InfoLevel {
+		return
+	}
+	Logger.Infof(format, args...)
+}
+
 func Error(msg string, tags ...string) {
 	if Logger.Level < logrus.InfoLevel {
 		return
 	}
 	Logger.WithFields(parseFields(tags...)).Error(msg)
+}
+
+func Errorf(format string, args ...interface{}) {
+	if Logger.Level < logrus.InfoLevel {
+		return
+	}
+	Logger.Errorf(format, args...)
 }
 
 func parseFields(tags ...string) logrus.Fields {
