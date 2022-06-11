@@ -18,6 +18,7 @@ import (
 )
 
 func main() {
+	defer recover()
 	ctx := context.Background()
 	// Handle sigterm and await termChan signal
 	termChan := make(chan os.Signal)
@@ -59,4 +60,10 @@ func main() {
 		log.Infof("HTTP server interupted, Error - %s:%s", err, err.Error())
 	}
 	log.Info("Server Stopped")
+}
+
+func recover() {
+	if r:= recover(); r != nil {
+		log.Info("Recovered from panic!!!")
+	}
 }
