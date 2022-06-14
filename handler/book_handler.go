@@ -53,10 +53,12 @@ func (h handler) AddBook(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode("Created")
 		producer, err := kafka.NewSyncProducer()
 		if err != nil {
-			Logger.Errorf(fmt.Sprintf("Error while publishing message: %s", err.Error()))
+			Logger.Errorf(fmt.Sprintf("Error while creating syncProducer: %s", err.Error()))
+			panic(err)
 		}
 		if err := producer.PublishMessage(context.Background(), dto.Message{Value: "Created"}); err != nil {
 			Logger.Errorf(fmt.Sprintf("Error while publishing message: %s", err.Error()))
+			panic(err)
 		}
 	}
 }

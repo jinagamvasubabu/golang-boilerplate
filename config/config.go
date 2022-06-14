@@ -13,7 +13,7 @@ type Config struct {
 	PgUser             string `yaml:"pgUser" env:"pgUser" env-default:"pg"`
 	PgPassword         string `yaml:"pgPassword" env:"pgPassword" env-default:"pass"`
 	DB                 string `yaml:"db" env:"db" env-default:"crud"`
-	Migrate            bool   `yaml:"migrate" env:"migrate" env-default:"false"`
+	Migrate            bool   `yaml:"migrate" env:"migrate" env-default:"true"`
 	LogLevel           string `yaml:"logLevel" env:"logLevel" env-default:"info"`
 	PORT               int    `yaml:"port" env:"port" env-default:"4001"`
 	HOST               string `yaml:"host" env:"port" env-default:"localhost"`
