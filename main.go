@@ -18,11 +18,8 @@ import (
 )
 
 func main() {
-	defer recover()
+	defer recoverPanic()
 	ctx := context.Background()
-	// Handle sigterm and await termChan signal
-	termChan := make(chan os.Signal)
-	signal.Notify(termChan, syscall.SIGTERM, syscall.SIGINT)
 	//Initialize the config
 	if err := config.InitConfig(); err != nil {
 		log.Error("error while loading the config", fmt.Sprintf("%s:%s", err, err.Error()))
@@ -40,12 +37,15 @@ func main() {
 	bookService := service.NewBookService(ctx, bookRepository)
 	//Initiliaze the handler
 	bookHandler := handler.NewBookHandler(bookService)
-
+	//router
 	router := handler.InitRouter(bookHandler)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf("%s:%d", config.GetConfig().HOST, config.GetConfig().PORT),
 		Handler: router,
 	}
+	// Handle sigterm and await termChan signal
+	termChan := make(chan os.Signal)
+	signal.Notify(termChan, syscall.SIGTERM, syscall.SIGINT)
 	//Graceful shutdown on OS signals (CTRL+C, etc)
 	go func() {
 		<-termChan // Blocks here until interrupted
@@ -62,8 +62,9 @@ func main() {
 	log.Info("Server Stopped")
 }
 
-func recover() {
-	if r:= recover(); r != nil {
+//function to recover a panic
+func recoverPanic() {
+	if r := recover(); r != nil {
 		log.Info("Recovered from panic!!!")
 	}
 }

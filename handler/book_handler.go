@@ -10,7 +10,10 @@ import (
 	"fmt"
 
 	"github.com/gorilla/mux"
+	"github.com/jinagamvasubabu/golang-boilerplate/adapters/kafka"
+	Logger "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
 	"github.com/jinagamvasubabu/golang-boilerplate/model"
+	"github.com/jinagamvasubabu/golang-boilerplate/model/dto"
 	"github.com/jinagamvasubabu/golang-boilerplate/service"
 )
 
@@ -22,7 +25,7 @@ func NewBookHandler(bookService service.BookService) handler {
 	return handler{bookService}
 }
 
-func (h *handler) AddBook(w http.ResponseWriter, r *http.Request) {
+func (h handler) AddBook(w http.ResponseWriter, r *http.Request) {
 	// Read to request body
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
@@ -48,10 +51,17 @@ func (h *handler) AddBook(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode("Created")
+		producer, err := kafka.NewSyncProducer()
+		if err != nil {
+			Logger.Errorf(fmt.Sprintf("Error while publishing message: %s", err.Error()))
+		}
+		if err := producer.PublishMessage(context.Background(), dto.Message{Value: "Created"}); err != nil {
+			Logger.Errorf(fmt.Sprintf("Error while publishing message: %s", err.Error()))
+		}
 	}
 }
 
-func (h *handler) GetAllBooks(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetAllBooks(w http.ResponseWriter, r *http.Request) {
 	var books []model.Book
 	var err error
 
@@ -65,9 +75,10 @@ func (h *handler) GetAllBooks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(books)
+	Logger.Info("Books fetched")
 }
 
-func (h *handler) GetBook(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetBook(w http.ResponseWriter, r *http.Request) {
 	// Read dynamic id parameter
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -86,4 +97,5 @@ func (h *handler) GetBook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(book)
 	}
+	Logger.Info("Book fetched")
 }

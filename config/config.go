@@ -17,7 +17,9 @@ type Config struct {
 	LogLevel           string `yaml:"logLevel" env:"logLevel" env-default:"info"`
 	PORT               int    `yaml:"port" env:"port" env-default:"4001"`
 	HOST               string `yaml:"host" env:"port" env-default:"localhost"`
-	MaxOpenConnections int  `yaml:"maxOpenConnections" env:"port" env-default:"5"`
+	MaxOpenConnections int    `yaml:"maxOpenConnections" env:"port" env-default:"5"`
+	KafkaBrokerUrl     string `yaml:"kafkaBrokerUrl" env:"kafkaBrokerUrl" env-default:"localhost:29092"`
+	Topic              string `yaml:"topic" env:"topic" env-default:"events.BookCreated"`
 }
 
 func InitConfig() error {

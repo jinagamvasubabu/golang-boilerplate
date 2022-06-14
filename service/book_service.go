@@ -3,7 +3,8 @@ package service
 import (
 	"context"
 
-	Logger "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
+	log "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
+
 	"github.com/jinagamvasubabu/golang-boilerplate/model"
 	"github.com/jinagamvasubabu/golang-boilerplate/repository"
 )
@@ -26,7 +27,7 @@ func NewBookService(ctx context.Context, bookRepository repository.BookRepositor
 
 func (b bookService) AddBook(ctx context.Context, book model.Book) error {
 	if err := b.bookRepository.AddBook(ctx, book); err != nil {
-		Logger.Errorf("Error while creating the book = %s", err.Error())
+		log.Errorf("Error while creating the book = %s", err.Error())
 		return err
 	}
 	return nil
@@ -35,7 +36,7 @@ func (b bookService) AddBook(ctx context.Context, book model.Book) error {
 func (b bookService) GetAllBooks(ctx context.Context) ([]model.Book, error) {
 	books, err := b.bookRepository.GetAllBooks(ctx)
 	if err != nil {
-		Logger.Errorf("Error while fetching all the books = %s", err.Error())
+		log.Errorf("Error while fetching all the books = %s", err.Error())
 		return books, err
 	}
 	return books, err
@@ -44,7 +45,7 @@ func (b bookService) GetAllBooks(ctx context.Context) ([]model.Book, error) {
 func (b bookService) GetBook(ctx context.Context, id int32) (model.Book, error) {
 	book, err := b.bookRepository.GetBook(ctx, id)
 	if err != nil {
-		Logger.Errorf("Error while fetching the book = %s", err.Error())
+		log.Errorf("Error while fetching the book = %s", err.Error())
 		return book, err
 	}
 	return book, err

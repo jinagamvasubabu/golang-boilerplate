@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"fmt"
+	"time"
 
 	Logger "github.com/jinagamvasubabu/golang-boilerplate/adapters/logger"
 	"github.com/jinagamvasubabu/golang-boilerplate/config"
@@ -21,7 +22,8 @@ func InitDatabase() (*gorm.DB, error) {
 
 	if err != nil {
 		Logger.Errorf("err:=%s", err.Error())
-		return nil, err
+		time.Sleep(10 * time.Second)
+		InitDatabase()
 	}
 
 	//Auto Migration

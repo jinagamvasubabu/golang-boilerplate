@@ -7,6 +7,6 @@
 * Os signalling & recover panic - Done
 * Kafka setup
 * Swagger
-* Unit tests
+* Unit tests & Mocking dependency
 * Go mod cleanup
 * Move to mongo cluster

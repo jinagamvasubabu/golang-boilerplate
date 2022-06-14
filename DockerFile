@@ -1,15 +1,29 @@
-#build stage
-FROM golang:alpine AS builder
-RUN apk add --no-cache git
-WORKDIR /go/src/app
-COPY . .
-RUN go get -d -v ./...
-RUN go build -o /go/bin/app -v ./...
-
-#final stage
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/bin/app /app
-ENTRYPOINT /app
-LABEL Name=golang-boilerplate Version=0.0.1
-EXPOSE 3000
+# Build Stage
+# First pull Golang image
+FROM golang:1.18-alpine as build-env
+ 
+# Set environment variable
+ENV APP_NAME golang-boilerplate
+ENV CMD_PATH main.go
+ 
+# Copy application data into image
+COPY . $GOPATH/src/$APP_NAME
+WORKDIR $GOPATH/src/$APP_NAME
+ 
+# Budild application
+RUN CGO_ENABLED=0 go build -v -o /$APP_NAME $GOPATH/src/$APP_NAME/$CMD_PATH
+ 
+# Run Stage
+FROM alpine:3.14
+ 
+# Set environment variable
+ENV APP_NAME golang-boilerplate
+ 
+# Copy only required data into this image
+COPY --from=build-env /$APP_NAME .
+ 
+# Expose application port
+EXPOSE 4001
+ 
+# Start app
+CMD ./$APP_NAME
