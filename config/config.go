@@ -12,6 +12,8 @@ type Config struct {
 	DBType             string `yaml:"dbType" env:"dbType" env-default:"postgres"`
 	PgUser             string `yaml:"pgUser" env:"pgUser" env-default:"pg"`
 	PgPassword         string `yaml:"pgPassword" env:"pgPassword" env-default:"pass"`
+	MongoPort          string `yaml:"mongoPort" env:"mongoPort" env-default:"27017"`
+	MongoHost          string `yaml:"mongoHost" env:"mongoHost" env-default:"localhost"`
 	DB                 string `yaml:"db" env:"db" env-default:"crud"`
 	Migrate            bool   `yaml:"migrate" env:"migrate" env-default:"true"`
 	LogLevel           string `yaml:"logLevel" env:"logLevel" env-default:"info"`
@@ -22,7 +24,8 @@ type Config struct {
 	Topic              string `yaml:"topic" env:"topic" env-default:"events.BookCreated"`
 }
 
-func InitConfig() error {
+func InitConfig(DBType string) error {
+	cfg.DBType = DBType
 	if err := cleanenv.ReadEnv(&cfg); err != nil {
 		return err
 	}
@@ -31,6 +34,7 @@ func InitConfig() error {
 
 func SetConfig(newConfig Config) {
 	cfg = newConfig
+
 }
 
 func GetConfig() Config {
