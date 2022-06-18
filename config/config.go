@@ -24,17 +24,16 @@ type Config struct {
 	Topic              string `yaml:"topic" env:"topic" env-default:"events.BookCreated"`
 }
 
-func InitConfig(DBType string) error {
-	cfg.DBType = DBType
+func InitConfig() error {
 	if err := cleanenv.ReadEnv(&cfg); err != nil {
 		return err
 	}
 	return nil
 }
 
-func SetConfig(newConfig Config) {
+func SetConfig(newConfig Config, DBType string) {
 	cfg = newConfig
-
+	cfg.DBType = DBType
 }
 
 func GetConfig() Config {

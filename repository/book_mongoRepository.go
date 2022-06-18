@@ -18,7 +18,7 @@ type mongoBookRepository struct {
 }
 
 
-func MongoNewBookRepository(ctx context.Context, db *mgo.Database, cfg config.Config) BookRepository {
+func NewMongoBookRepository(ctx context.Context, db *mgo.Database, cfg config.Config) BookRepository {
 	return mongoBookRepository{
 		db:  db,
 		cfg: cfg,
@@ -32,10 +32,10 @@ func (b mongoBookRepository) GetBook(ctx context.Context, id int32) (model.Book,
 		return nil, err
 	}
 	book := model.Book{
-		Id:     b.Id.Hex(),
-		Title:  b.Title,
-		Author: b.Author,
-		Desc:   b.Desc,
+		Id:     bookEntity.Id.int32(),
+		Title:  bookEntity.Title,
+		Author: bookEntity.Author,
+		Desc:   bookEntity.Desc,
 	}
 
 	return book, nil

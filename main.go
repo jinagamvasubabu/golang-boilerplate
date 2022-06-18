@@ -22,7 +22,7 @@ func main() {
 	ctx := context.Background()
 	//Initialize the config
 
-	if err := config.InitConfig("mongodb"); err != nil {
+	if err := config.InitConfig(); err != nil {
 		log.Error("error while loading the config", fmt.Sprintf("%s:%s", err, err.Error()))
 	}
 	//Logger
@@ -37,13 +37,13 @@ func main() {
 		if err != nil {
 			log.Errorf("Error:%s", err.Error())
 		}
-		bookRepository = repository.PostgresNewBookRepository(ctx, DB)
+		bookRepository = repository.NewPostgresBookRepository(ctx, DB)
 	} else {
 		DB, err := db.InitMongoDatabase()
 		if err != nil {
 			log.Errorf("Error:%s", err.Error())
 		}
-		bookRepository = repository.MongoNewBookRepository(ctx, DB, cfg)
+		bookRepository = repository.NewMongoBookRepository(ctx, DB, cfg)
 	}
 
 	//Initiliaze the  service.
