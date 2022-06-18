@@ -24,6 +24,18 @@ services:
       - db:/var/lib/postgresql/data 
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend  
+  ######## MONGODB #########
+  mongodb_container:
+    container_name: mongo
+    image: mongo:5.0.7
+    
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_db:/data/db
 
   ######### PGADMIN ##########
   pgadmin:

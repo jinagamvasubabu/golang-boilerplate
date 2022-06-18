@@ -14,7 +14,7 @@ import (
 
 var db *gorm.DB
 
-func InitDatabase() (*gorm.DB, error) {
+func InitPostgresDatabase() (*gorm.DB, error) {
 	cfg := config.GetConfig()
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", cfg.PgUser, cfg.PgPassword, cfg.PgHost, cfg.PgPort, cfg.DB)
 
@@ -23,7 +23,7 @@ func InitDatabase() (*gorm.DB, error) {
 	if err != nil {
 		Logger.Errorf("err:=%s", err.Error())
 		time.Sleep(10 * time.Second)
-		InitDatabase()
+		InitPostgresDatabase()
 	}
 
 	//Auto Migration

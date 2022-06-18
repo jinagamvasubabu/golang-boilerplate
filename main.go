@@ -21,20 +21,34 @@ func main() {
 	defer recoverPanic()
 	ctx := context.Background()
 	//Initialize the config
+
 	if err := config.InitConfig(); err != nil {
 		log.Error("error while loading the config", fmt.Sprintf("%s:%s", err, err.Error()))
 	}
 	//Logger
 	log.InitLogger()
-	//Initialize the Database
-	DB, err := db.InitDatabase()
-	if err != nil {
-		log.Errorf("Error:%s", err.Error())
+
+	//get config to check DB Type
+	cfg := config.GetConfig()
+	var bookRepository repository.BookRepository
+
+	if cfg.DBType == "postgres" {
+		DB, err := db.InitPostgresDatabase()
+		if err != nil {
+			log.Errorf("Error:%s", err.Error())
+		}
+		bookRepository = repository.NewPostgresBookRepository(ctx, DB)
+	} else {
+		DB, err := db.InitMongoDatabase()
+		if err != nil {
+			log.Errorf("Error:%s", err.Error())
+		}
+		bookRepository = repository.NewMongoBookRepository(ctx, DB, cfg)
 	}
-	//Initiliaze the repository
-	bookRepository := repository.NewBookRepository(ctx, DB)
-	//Initiliaze the service
+
+	//Initiliaze the  service.
 	bookService := service.NewBookService(ctx, bookRepository)
+
 	//Initiliaze the handler
 	bookHandler := handler.NewBookHandler(bookService)
 	//router
