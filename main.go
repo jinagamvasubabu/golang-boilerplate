@@ -30,6 +30,7 @@ func main() {
 
 	//get config to check DB Type
 	cfg := config.GetConfig()
+
 	var bookRepository repository.BookRepository
 
 	if cfg.DBType == "postgres" {

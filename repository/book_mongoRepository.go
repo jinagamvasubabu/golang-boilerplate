@@ -27,7 +27,7 @@ func NewMongoBookRepository(ctx context.Context, db *mgo.Database, cfg config.Co
 
 func (b mongoBookRepository) GetBook(ctx context.Context, id int32) (model.Book, error) {
 	var bookEntity model.MongoBookEntity{}
-	if err := b.db.C(b.cfg.DB).Find(bson.M{"id": ObjectId(id)}).One(&bookEntity); err != nil {
+	if err := b.db.C(b.cfg.Collection).Find(bson.M{"id": ObjectId(id)}).One(&bookEntity); err != nil {
 		Logger.Errorf("Error while finding books = %s", err)
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (b mongoBookRepository) GetBook(ctx context.Context, id int32) (model.Book,
 
 func (b mongoBookRepository) GetAllBooks(ctx context.Context) ([]model.Book, error) {
 	booksEntity := []model.MongoBookEntity{}
-	if err := b.db.C(b.cfg.DB).Find(bson.M{}).All(&booksEntity); err != nil {
+	if err := b.db.C(b.cfg.Collection).Find(bson.M{}).All(&booksEntity); err != nil {
 		Logger.Errorf("Error while finding books = %s", err)
 		return booksEntity, err
 	}
@@ -72,7 +72,7 @@ func (b mongoBookRepository) AddBook(ctx context.Context, book model.Book) error
 		Desc:   book.Desc,
 	}
 
-	if err := b.db.C(b.cfg.DB).Insert(&bookEntity); err != nil {
+	if err := b.db.C(b.cfg.Collection).Insert(&bookEntity); err != nil {
 		Logger.Errorf("Error while creating book = %s", err.Error())
 		return err
 	}

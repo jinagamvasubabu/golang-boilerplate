@@ -15,6 +15,7 @@ type Config struct {
 	MongoPort          string `yaml:"mongoPort" env:"mongoPort" env-default:"27017"`
 	MongoHost          string `yaml:"mongoHost" env:"mongoHost" env-default:"localhost"`
 	DB                 string `yaml:"db" env:"db" env-default:"crud"`
+	Collection         string `yaml:"collection" env:"collection" env-default:"crudCollection"`
 	Migrate            bool   `yaml:"migrate" env:"migrate" env-default:"true"`
 	LogLevel           string `yaml:"logLevel" env:"logLevel" env-default:"info"`
 	PORT               int    `yaml:"port" env:"port" env-default:"4001"`
